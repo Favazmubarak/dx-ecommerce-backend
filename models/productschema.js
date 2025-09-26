@@ -15,5 +15,3 @@ const productschema = new mongoose.Schema(
 );
 
 const products = mongoose.model("product",productschema)
-
-// export  {products}
