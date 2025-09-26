@@ -1,7 +1,7 @@
 import Users from "../models/userschema.js";
 import Category from "../models/categoryschema.js";
-import bcrypt from "bcrypt"
-
+import Products from "../models/productschema.js";
+import bcrypt from "bcrypt";
 
 //////////// Register For New Users /////////////
 async function registerfn(req, res) {
@@ -35,7 +35,6 @@ async function registerfn(req, res) {
   }
 }
 
-
 ///////////// Login Existing User ////////////////
 async function loginfn(req, res) {
   try {
@@ -64,6 +63,7 @@ async function loginfn(req, res) {
   }
 }
 
+///////////// get category ///////////////////////
 
 async function getcategory(req, res) {
   try {
@@ -74,6 +74,31 @@ async function getcategory(req, res) {
   }
 }
 
+////////////// get products  /////////////////////
 
+async function getproducts(req,res) {
+  try {
+    const result =await Products.find()
+    res.send(result)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-export { registerfn, loginfn ,getcategory };
+//////////////// get products by id //////////////////
+
+async function getproductsbyid(req,res) {
+  try {
+    const id = req.params.id
+    const products  = await Products.findById(id).populate("category_id")
+    if(!products){
+      res.status(404).json("products Not Found")
+    }
+    res.status(200).json(products)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({error:"Server Error"})
+  }
+}
+
+export { registerfn, loginfn, getcategory, getproducts,getproductsbyid };

@@ -1,7 +1,9 @@
 import Users from "../models/userschema.js";
-import bcrypt from "bcrypt"
+import Category from "../models/categoryschema.js";
+import bcrypt from "bcrypt";
+import Products from "../models/productschema.js";
 
-
+//////////////// admin login fn /////////////////
 async function adminfn(req, res) {
   try {
     const { email, password } = req.body;
@@ -29,4 +31,42 @@ async function adminfn(req, res) {
   }
 }
 
-export {adminfn}
+///////////////// admin view users ///////////////////
+async function adminviewusers(req, res) {
+  try {
+    const find = await Users.find({ role: "User" });
+    res.status(200).json({ find });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server Error" });
+  }
+}
+
+//////////////// add categories ///////////////////
+async function addcategories(req, res) {
+  try {
+    const { name, description } = req.body;
+    const result = await Category.create({ name, description });
+    res.status(200).json({ result });
+    if (!result) {
+      res.status(500).json("Category Not Found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Not Added Category");
+  }
+}
+
+//////////////  add  products  /////////////////////
+async function addproducts(req, res) {
+  try {
+    const { name, price, description } = req.body;
+    const add = await Products.create({name,price,description})
+    res.status(200).json({add})
+  } catch (error) {
+    console.log(error);
+    res.status(400).json("Not Added products")
+  }
+}
+
+export { adminfn, adminviewusers, addcategories,addproducts };
