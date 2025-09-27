@@ -3,6 +3,7 @@ import connectDB from "./Database/connectDB.js";
 import session from "express-session";
 import publicRoutes from "./Routers/publicRoutes.js";
 import adminRoutes from "./Routers/adminRoutes.js"
+import userRoutes from "./Routers/userRoutes.js"
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(publicRoutes);
 app.use(adminRoutes);
+app.use(userRoutes)
 
 app.listen(PORT, () => {
   console.log("Server is Running...\n");

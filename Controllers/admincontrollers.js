@@ -57,6 +57,17 @@ async function addcategories(req, res) {
   }
 }
 
+/////////////// view categories  //////////////////////
+
+async function adminviewcategories(req,res) {
+  try {
+    const get = await Category.find()
+    res.status(200).json(get)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 //////////////  add  products  /////////////////////
 async function addproducts(req, res) {
   try {
@@ -68,5 +79,14 @@ async function addproducts(req, res) {
     res.status(400).json("Not Added products")
   }
 }
+async function adminviewproducts(req,res){
+  try {
+    const get = await Products.find()
+    res.status(200).json(get)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-export { adminfn, adminviewusers, addcategories,addproducts };
+
+export { adminfn, adminviewusers, addcategories,addproducts ,adminviewcategories,adminviewproducts};
