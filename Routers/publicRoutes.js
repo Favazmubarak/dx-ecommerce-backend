@@ -1,5 +1,5 @@
 import express from "express";
-import { registerfn, loginfn ,getcategory ,getproducts,getproductsbyid } from "../Controllers/publiccontrollers.js";
+import { registerfn, loginfn ,getcategory ,getproducts,getproductsbyid,logout } from "../Controllers/publiccontrollers.js";
 
 const router = express.Router();
 
@@ -8,5 +8,6 @@ router.post("/login", loginfn);
 router.get("/category",getcategory)
 router.get("/products",getproducts)
 router.get("/products/:id",getproductsbyid)
+router.post('/logout',logout)
 
 export default router;

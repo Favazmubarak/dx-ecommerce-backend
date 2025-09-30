@@ -2,9 +2,10 @@ import Users from "../models/userschema.js";
 import Category from "../models/categoryschema.js";
 import bcrypt from "bcrypt";
 import Products from "../models/productschema.js";
+import Order from "../models/orders.js";
 
 //////////////// admin login fn /////////////////
-async function adminfn(req, res) {
+export async function adminfn(req, res) {
   try {
     const { email, password } = req.body;
     const admin = await Users.findOne({ email: email });
@@ -32,7 +33,7 @@ async function adminfn(req, res) {
 }
 
 ///////////////// admin view users ///////////////////
-async function adminviewusers(req, res) {
+export async function adminviewusers(req, res) {
   try {
     const find = await Users.find({ role: "User" });
     res.status(200).json({ find });
@@ -43,7 +44,7 @@ async function adminviewusers(req, res) {
 }
 
 //////////////// add categories ///////////////////
-async function addcategories(req, res) {
+export async function addcategories(req, res) {
   try {
     const { name, description } = req.body;
     const result = await Category.create({ name, description });
@@ -59,34 +60,194 @@ async function addcategories(req, res) {
 
 /////////////// view categories  //////////////////////
 
-async function adminviewcategories(req,res) {
+export async function adminviewcategories(req, res) {
   try {
-    const get = await Category.find()
-    res.status(200).json(get)
+    const get = await Category.find();
+    res.status(200).json(get);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
 
 //////////////  add  products  /////////////////////
-async function addproducts(req, res) {
+export async function addproducts(req, res) {
   try {
     const { name, price, description } = req.body;
-    const add = await Products.create({name,price,description})
-    res.status(200).json({add})
+    const add = await Products.create({ name, price, description });
+    res.status(200).json({ add });
   } catch (error) {
     console.log(error);
-    res.status(400).json("Not Added products")
+    res.status(400).json("Not Added products");
   }
 }
-async function adminviewproducts(req,res){
+//////////////// view products /////////////////// 
+export async function adminviewproducts(req, res) {
   try {
-    const get = await Products.find()
-    res.status(200).json(get)
+    const get = await Products.find();
+    res.status(200).json(get);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
 
+///////////////// update products   ///////////////////
+export async function adminUpdateProducts(req, res) {
+  try {
+    const needtoupdate = req.body;
+    const id = req.params.id;
+    const updated = await Product.findByIdAndUpdate(id, needtoupdate, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({ updated });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "errror Happens" });
+  }
+}
 
-export { adminfn, adminviewusers, addcategories,addproducts ,adminviewcategories,adminviewproducts};
+/////////////// delete products //////////////////////
+export async function adminDeleteProducts(req, res) {
+  try {
+    const id = req.params.id;
+    const deleted = await Product.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(400).json({ message: "no object found to delete." });
+    }
+    res.status(200).json({ deleted });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "errror happens" });
+  }
+}
+
+///////////////// crud category      //////////////////////
+
+export async function adminViewCategories(req, res) {
+  try {
+    const result = await Category.find();
+    res.status(200).json({ result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error happens" });
+  }
+}
+
+export async function adminAddCategories(req, res) {
+  try {
+    const { name, description } = req.body;
+    const result = await Category.create({ name, description });
+    res.status(200).json({ result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error happens" });
+  }
+}
+
+export async function adminUpdateCategories(req, res) {
+  try {
+    const id = req.params.id;
+    const toupdate = req.body;
+    const updated = await Category.findByIdAndUpdate(id, toupdate, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({ updated });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error-happens" });
+  }
+}
+
+export async function adminDeleteCategories(req, res) {
+  try {
+    const id = req.params.id;
+    const deleted = await Category.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(400).json({ message: "no object found to delete." });
+    }
+    res.status(200).json({ deleted });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error-happens" });
+  }
+}
+
+//////////////////// Admin Orders Side  ///////////////
+
+export async function adminViewOrders(req, res) {
+  try {
+    const orders = await Order.find().populate("user_id");
+    res.status(200).json({ orders });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: " error-happens" });
+  }
+}
+
+export async function adminUpdateOrders(req, res) {
+  try {
+    const id = req.params.id;
+    const status = req.body.status;
+    const updated = await Order.findByIdAndUpdate(
+      id,
+      { status },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.json({ updated });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error happens" });
+  }
+}
+
+export async function adminDeleteOrders(req, res) {
+  try {
+    const id = req.params.id;
+    const deleted = await Order.findByIdAndDelete(id);
+    res.json({ deleted });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error happens" });
+  }
+}
+
+///////////// enable/disable //////////////////
+export async function adminEnableUsers(req, res) {
+  try {
+    const id = req.params.id;
+    const updated = await User.findByIdAndUpdate(
+      id,
+      { isEnabled: true },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.json(updated);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error Happens" });
+  }
+}
+
+export async function adminDisableUsers(req, res) {
+    try {
+    const id = req.params.id;
+    const updated = await User.findByIdAndUpdate(
+      id,
+      { isEnabled: false },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.json(updated);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error Happens" });
+  }
+}

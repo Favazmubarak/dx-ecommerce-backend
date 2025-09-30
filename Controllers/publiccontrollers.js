@@ -100,5 +100,10 @@ async function getproductsbyid(req,res) {
     res.status(500).json({error:"Server Error"})
   }
 }
+function logout(req,res) {
+  req.session.destroy(()=>{
+    res.status(200).json({message:'logout successfull'})
+  })
+}
 
-export { registerfn, loginfn, getcategory, getproducts,getproductsbyid };
+export { registerfn, loginfn, getcategory, getproducts,getproductsbyid,logout };
