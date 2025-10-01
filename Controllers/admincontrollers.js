@@ -13,7 +13,7 @@ export async function adminfn(req, res) {
     if (!admin) {
       return res.status(400).json({ error: "Admin Not Found" });
     }
-    if (admin.role != "Admin") {
+    if (admin.role !== "Admin") {
       return res.status(400).json({ error: "Admins-Only..." });
     }
     const hashed = await bcrypt.compare(password, admin.password);
@@ -95,7 +95,7 @@ export async function adminUpdateProducts(req, res) {
   try {
     const needtoupdate = req.body;
     const id = req.params.id;
-    const updated = await Product.findByIdAndUpdate(id, needtoupdate, {
+    const updated = await Products.findByIdAndUpdate(id, needtoupdate, {
       new: true,
       runValidators: true,
     });
@@ -219,7 +219,7 @@ export async function adminDeleteOrders(req, res) {
 export async function adminEnableUsers(req, res) {
   try {
     const id = req.params.id;
-    const updated = await User.findByIdAndUpdate(
+    const updated = await Users.findByIdAndUpdate(
       id,
       { isEnabled: true },
       {
@@ -237,7 +237,7 @@ export async function adminEnableUsers(req, res) {
 export async function adminDisableUsers(req, res) {
     try {
     const id = req.params.id;
-    const updated = await User.findByIdAndUpdate(
+    const updated = await Users.findByIdAndUpdate(
       id,
       { isEnabled: false },
       {

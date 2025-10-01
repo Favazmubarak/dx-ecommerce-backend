@@ -1,5 +1,5 @@
 import Cart from "../models/cart.js";
-// import Order from "../models/orders.js";
+import Order from "../models/orders.js";
 
 ////////////////////////// add cart  ////////////////////////
 export async function addcart(req, res) {
@@ -49,13 +49,16 @@ export async function getcart(req, res) {
 ///////////// update cart  ////////////////////Small error
 export async function updatecart(req, res) {
   try {
-    const getid = req.params.userId;
-    const cart = await Cart.findById(getid);
-    cart.quantity++;
+    const getid = req.session.userId;
+    const cartid = req.params.id;
+    const {quantity} = req.body
+    const cart = await Cart.findByIdAndUpdate(cartid,{quantity:quantity},{new:true});
+    console.log(cart);
+    // cart.quantity++;
     await Cart.save();
     return res.status(200).json({ message: "cart item Updated" });
   } catch (error) {
-    res.status(400).json({ error: "Error Happens" });
+    res.status(400).json({ error: "Error Happend" });
   }
 }
 

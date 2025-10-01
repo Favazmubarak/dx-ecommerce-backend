@@ -9,7 +9,7 @@ const cartSchema = new mongoose.Schema(
     },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Users",
+      ref: "User",
       required: true,
     },
     quantity: { type: Number, required: true, min: 1 },

@@ -18,26 +18,26 @@ import {
   adminEnableUsers,
   adminDisableUsers
 } from "../Controllers/admincontrollers.js";
-
+import { isAdmin } from "../middlewares/autnetication.js";
 const router = express.Router();
 
-router.post("/admin", adminfn);
-router.get("/admin/users", adminviewusers);
-router.post("/admin/categories", addcategories);
-router.post("/admin/products", addproducts);
-router.get("/admin/categories", adminviewcategories);
-router.get("/admin/products", adminviewproducts);
-router.put("/admin/products/:id", adminUpdateProducts);
-router.delete("/admin/products/:id", adminDeleteProducts);
+router.post("/reg", adminfn);
+router.use(isAdmin)
+router.get("/users", adminviewusers);
 
-router.get("/categories", adminViewCategories);
-router.post("/categories", adminAddCategories);
+router.post("/products", addproducts);
+router.get("/products", adminviewproducts);
+router.put("/products/:id", adminUpdateProducts);
+router.delete("/products/:id", adminDeleteProducts);
+
+router.post("/categories", addcategories);
+router.get("/categories", adminviewcategories);
 router.put("/categories/:id", adminUpdateCategories);
 router.delete("/categories/:id", adminDeleteCategories);
 
-router.get("/admin/orders",adminViewOrders)
-router.put("/admin/orders",adminUpdateOrders)
-router.delete("/admin/orders",adminDeleteOrders)
+router.get("/orders",adminViewOrders)
+router.put("/orders/:id",adminUpdateOrders)
+router.delete("/orders/:id",adminDeleteOrders)
 
 
 router.post('/users/:id/enable',adminEnableUsers)

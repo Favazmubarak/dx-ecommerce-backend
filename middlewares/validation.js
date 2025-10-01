@@ -12,14 +12,14 @@ export const handleValidation = (req, res, next) => {
 export const validateRegister = [
   body("username").notEmpty().withMessage("shouldnt be empty"),
   body("password")
-    .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters long"),
+    .isLength({ min: 3 })
+    .withMessage("Password must be at least 3 characters long"),
   body("email").isEmail().withMessage("give correct email"),
   handleValidation,
 ];
 
 export const validateLogin = [
-  body("uname").notEmpty().withMessage("Valid username required"),
-  body("pword").notEmpty().withMessage("Password is required"),
+  body("email").isEmail().withMessage("Valid username required"),
+  body("password").notEmpty().withMessage("Password is required"),
   handleValidation,
 ];
