@@ -16,6 +16,8 @@ async function registerfn(req, res) {
       return res.status(400).json({ error: "username or Email already exist" });
     }
     if (password != password2) {
+      console.log(req.body);
+      
       return res.status(400).json({ error: "Enter Same Password" });
     }
     const hashed = await bcrypt.hash(password, 10);
@@ -76,34 +78,41 @@ async function getcategory(req, res) {
 
 ////////////// get products  /////////////////////
 
-async function getproducts(req,res) {
+async function getproducts(req, res) {
   try {
-    const result =await Products.find()
-    res.send(result)
+    const result = await Products.find();
+    res.send(result);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
 
 //////////////// get products by id //////////////////
 
-async function getproductsbyid(req,res) {
+async function getproductsbyid(req, res) {
   try {
-    const id = req.params.id
-    const products  = await Products.findById(id).populate("category_id")
-    if(!products){
-      res.status(404).json("products Not Found")
+    const id = req.params.id;
+    const products = await Products.findById(id).populate("category_id");
+    if (!products) {
+      res.status(404).json("products Not Found");
     }
-    res.status(200).json(products)
+    res.status(200).json(products);
   } catch (error) {
-    console.log(error)
-    res.status(500).json({error:"Server Error"})
+    console.log(error);
+    res.status(500).json({ error: "Server Error" });
   }
 }
-function logout(req,res) {
-  req.session.destroy(()=>{
-    res.status(200).json({message:'logout successfull'})
-  })
+function logout(req, res) {
+  req.session.destroy(() => {
+    res.status(200).json({ message: "logout successfull" });
+  });
 }
 
-export { registerfn, loginfn, getcategory, getproducts,getproductsbyid,logout };
+export {
+  registerfn,
+  loginfn,
+  getcategory,
+  getproducts,
+  getproductsbyid,
+  logout,
+};

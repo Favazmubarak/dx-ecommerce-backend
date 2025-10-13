@@ -9,4 +9,4 @@ async function connectDB(URI) {
   }
 }
 
-export default  connectDB ;
+export default connectDB;

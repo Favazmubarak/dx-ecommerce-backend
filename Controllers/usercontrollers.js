@@ -51,13 +51,17 @@ export async function updatecart(req, res) {
   try {
     const getid = req.session.userId;
     const cartid = req.params.id;
-    const {quantity} = req.body
-    const cart = await Cart.findByIdAndUpdate(cartid,{quantity:quantity},{new:true});
+    const { quantity } = req.body;
+    const cart = await Cart.findByIdAndUpdate(
+      cartid,
+      { quantity: quantity },
+      { new: true }
+    );
     console.log(cart);
     // cart.quantity++;
-    await Cart.save();
     return res.status(200).json({ message: "cart item Updated" });
   } catch (error) {
+    console.log(error)
     res.status(400).json({ error: "Error Happend" });
   }
 }

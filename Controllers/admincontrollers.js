@@ -3,6 +3,8 @@ import Category from "../models/categoryschema.js";
 import bcrypt from "bcrypt";
 import Products from "../models/productschema.js";
 import Order from "../models/orders.js";
+// import multer from "multer";
+
 
 //////////////// admin login fn /////////////////
 export async function adminfn(req, res) {
@@ -70,17 +72,21 @@ export async function adminviewcategories(req, res) {
 }
 
 //////////////  add  products  /////////////////////
+
 export async function addproducts(req, res) {
   try {
-    const { name, price, description } = req.body;
-    const add = await Products.create({ name, price, description });
+    console.log(req.file);
+    
+    const { name, price, description} = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null 
+    const add = await Products.create({ name, price, description,image});
     res.status(200).json({ add });
   } catch (error) {
     console.log(error);
     res.status(400).json("Not Added products");
   }
 }
-//////////////// view products /////////////////// 
+//////////////// view products ///////////////////
 export async function adminviewproducts(req, res) {
   try {
     const get = await Products.find();
@@ -110,7 +116,7 @@ export async function adminUpdateProducts(req, res) {
 export async function adminDeleteProducts(req, res) {
   try {
     const id = req.params.id;
-    const deleted = await Product.findByIdAndDelete(id);
+    const deleted = await Products.findByIdAndDelete(id);
     if (!deleted) {
       return res.status(400).json({ message: "no object found to delete." });
     }
@@ -235,7 +241,7 @@ export async function adminEnableUsers(req, res) {
 }
 
 export async function adminDisableUsers(req, res) {
-    try {
+  try {
     const id = req.params.id;
     const updated = await Users.findByIdAndUpdate(
       id,
@@ -249,5 +255,18 @@ export async function adminDisableUsers(req, res) {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error Happens" });
+  }
+}
+export async function loadhome(req, res) {
+  try {
+    const userCount = await Users.countDocuments();
+    const productCount = await Products.countDocuments();
+    const orderCount = await Order.countDocuments();
+    const categoryCount = await Category.countDocuments();
+    res
+      .status(200)
+      .json({ userCount, productCount, orderCount, categoryCount });
+  } catch (error) {
+    res.status(400).json({ error: "from serverside error" });
   }
 }

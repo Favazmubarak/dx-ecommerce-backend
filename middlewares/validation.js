@@ -22,4 +22,4 @@ export const validateLogin = [
   body("email").isEmail().withMessage("Valid username required"),
   body("password").notEmpty().withMessage("Password is required"),
   handleValidation,
-];
+] 
