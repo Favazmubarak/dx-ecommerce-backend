@@ -37,7 +37,7 @@ export async function adminfn(req, res) {
 ///////////////// admin view users ///////////////////
 export async function adminviewusers(req, res) {
   try {
-    const find = await Users.find({ role: "User" });
+    const find = await Users.find({role:"User"});
     res.status(200).json({ find });
   } catch (error) {
     console.log(error);

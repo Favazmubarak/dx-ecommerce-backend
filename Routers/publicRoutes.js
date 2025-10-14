@@ -9,6 +9,6 @@ router.post("/login", validateLogin, loginfn);
 router.get("/category",getcategory)
 router.get("/products",getproducts)
 router.get("/products/:id",getproductsbyid)
-router.post('/logout',logout)
+router.delete('/logout',logout)
 
 export default router;
