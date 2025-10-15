@@ -95,6 +95,8 @@ export async function postOrders(req, res) {
   try {
     const user_id = req.session.userId;
     const cart = await Cart.find({ user_id }).populate("product_id");
+    console.log(cart);
+    
     if (cart.length === 0) {
       return res.status(400).json({ error: "cart is empty" });
     }
@@ -103,7 +105,7 @@ export async function postOrders(req, res) {
     cart.forEach((item) => {
       const quantity = item.quantity;
       const price = item.product_id.price;
-      const product_id = item.product_id._id;
+      const product_id = item.product_id._id; 
       const item_total = quantity * price;
       orderitems.push({ product_id, quantity, price, item_total });
       total_price = total_price + item_total;

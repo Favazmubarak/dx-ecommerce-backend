@@ -45,7 +45,7 @@ router.get("/loadhome", loadhome);
 
 router.post("/products", uploads.single("image"), addproducts);
 router.get("/products", adminviewproducts);
-router.put("/products/:id", adminUpdateProducts);
+router.put("/products/:id",uploads.single("image"), adminUpdateProducts);
 router.delete("/products/:id", adminDeleteProducts);
 
 router.post("/categories", addcategories);

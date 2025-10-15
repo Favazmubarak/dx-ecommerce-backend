@@ -77,9 +77,11 @@ export async function addproducts(req, res) {
   try {
     console.log(req.file);
     
-    const { name, price, description} = req.body;
+    const { name, price, description,category} = req.body;
+    console.log(category,description);
+    
     const image = req.file ? `/uploads/${req.file.filename}` : null 
-    const add = await Products.create({ name, price, description,image});
+    const add = await Products.create({ name, price, description,image,category_id:category});
     res.status(200).json({ add });
   } catch (error) {
     console.log(error);
@@ -89,7 +91,7 @@ export async function addproducts(req, res) {
 //////////////// view products ///////////////////
 export async function adminviewproducts(req, res) {
   try {
-    const get = await Products.find();
+    const get = await Products.find().populate("category_id");
     res.status(200).json(get);
   } catch (error) {
     console.log(error);
@@ -97,18 +99,44 @@ export async function adminviewproducts(req, res) {
 }
 
 ///////////////// update products   ///////////////////
+// export async function adminUpdateProducts(req, res) {
+//   try {
+//     const needtoupdate = req.body;
+//     const id = req.params.id;
+//     console.log(req.body);  
+    
+//     const updated = await Products.findByIdAndUpdate(id, needtoupdate, {
+//       new: true,
+//       runValidators: true,
+//     });
+//     res.status(200).json({ updated });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "errror Happens" });
+//   }
+// }
+
+
 export async function adminUpdateProducts(req, res) {
   try {
-    const needtoupdate = req.body;
     const id = req.params.id;
-    const updated = await Products.findByIdAndUpdate(id, needtoupdate, {
+
+    const { name, category, price, description } = req.body;
+    const updateData = { name, category_id:category, price, description };
+
+    if (req.file) {
+      updateData.image = `/uploads/${req.file.filename}`;
+    }
+
+    const updated = await Products.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
+
     res.status(200).json({ updated });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "errror Happens" });
+    res.status(500).json({ error: "Error updating product" });
   }
 }
 
@@ -184,6 +212,8 @@ export async function adminDeleteCategories(req, res) {
 export async function adminViewOrders(req, res) {
   try {
     const orders = await Order.find().populate("user_id");
+    console.log(orders);
+    
     res.status(200).json({ orders });
   } catch (error) {
     console.log(error);
