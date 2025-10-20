@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import Cart from "../models/cart.js";
 import Order from "../models/orders.js";
 
@@ -6,7 +7,7 @@ export async function addcart(req, res) {
   try {
     const { product_id, quantity } = req.body;
     const qty = Number(quantity);
-    console.log(product_id ,quantity );
+    console.log(product_id, quantity);
 
     const userId = req.session.userId;
     console.log(userId);
@@ -103,17 +104,25 @@ export async function deletecart(req, res) {
 export async function getordersbyid(req, res) {
   try {
     const id = req.params.id;
-    const orders = await Order.findById(id)
-      .populate("items.product_id", "name price")
-      .populate("userId", "username email");
 
-      if(!orders) return res.status(404).json({error:"Order not found"})
+    const orders = await Order.findOne({ _id: id })
+    // .populate(
+    //   "items.product_id",
+    //   "name",
+    //   "price"
+    // );
+    // .populate("userId", "username email");
 
-         if (orders.userId._id.toString() !== req.session.userId) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
+    console.log(orders);
+    
+
+
+    if (!orders) return res.status(404).json({ error: "Order not found" });
+
     res.status(200).json({ orders });
   } catch (error) {
+    console.log(error);
+    
     res.status(400).json({ error: "Error Happens" });
   }
 }
@@ -152,8 +161,6 @@ export async function getordersbyid(req, res) {
 //   }
 // }
 
-
-
 export async function postOrders(req, res) {
   try {
     const user_id = req.session.userId;
@@ -177,7 +184,6 @@ export async function postOrders(req, res) {
 
     const cart = await Cart.find({ user_id }).populate("product_id");
     console.log(cart);
-    
 
     if (!cart || cart.length === 0) {
       return res.status(400).json({ error: "Cart is empty" });
@@ -186,30 +192,33 @@ export async function postOrders(req, res) {
     let orderitems = [];
     let total_price = 0;
     cart.forEach((item) => {
-      
       const product_id = item.product_id._id;
-      const item_total = quantity * price;
-      orderitems.push({ product_id, quantity, price, item_total });
+      const item_total = item.quantity * item.product_id.price;
+      orderitems.push({ product_id, item_total });
 
       total_price += item_total;
     });
 
-    const orderdata = await Order.create({
-      user_id,
+    console.log(total_price, orderitems);
+
+    const orderdata = await Order.insertOne({
+      user_id: user_id,
       items: orderitems,
-      total_price,
-      address,
+      total_price: total_price,
+      address: address,
     });
+
+    console.log(orderdata);
 
     await Cart.deleteMany({ user_id });
 
-    return res.status(201).json({ message: "Order placed", orderdata });
+    return res.status(201).json({ message: "Order placed", orderitems });
   } catch (error) {
-    console.error("postOrders error:", error);
+    // console.error("postOrders error:", error);
+    console.log(error);
     return res.status(500).json({ error: "some error happened" });
   }
 }
-
 
 /////////////////// get orders  ///////////////
 export async function getOrders(req, res) {
