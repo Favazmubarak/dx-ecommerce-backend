@@ -19,6 +19,7 @@ import {
   adminEnableUsers,
   adminDisableUsers,
   loadhome,
+  // AdminProfile,
 } from "../Controllers/admincontrollers.js";
 import fs from "fs";
 import path from "path";
@@ -59,5 +60,7 @@ router.delete("/orders/:id", adminDeleteOrders);
 
 router.post("/users/:id/enable", adminEnableUsers);
 router.post("/users/:id/disable", adminDisableUsers);
+// router.get("/admin/profile",AdminProfile)
+
 
 export default router;

@@ -3,6 +3,7 @@ import Category from "../models/categoryschema.js";
 import bcrypt from "bcrypt";
 import Products from "../models/productschema.js";
 import Order from "../models/orders.js";
+import mongoose from "mongoose";
 // import multer from "multer";
 
 
@@ -211,7 +212,7 @@ export async function adminDeleteCategories(req, res) {
 
 export async function adminViewOrders(req, res) {
   try {
-    const orders = await Order.find().populate("user_id");
+    const orders = await Order.find().populate("user_id").populate("items.product_id");
     console.log(orders);
     
     res.status(200).json({ orders });
@@ -257,7 +258,7 @@ export async function adminEnableUsers(req, res) {
     const id = req.params.id;
     const updated = await Users.findByIdAndUpdate(
       id,
-      { isEnabled: true },
+      { status: true },
       {
         new: true,
         runValidators: true,
@@ -271,11 +272,13 @@ export async function adminEnableUsers(req, res) {
 }
 
 export async function adminDisableUsers(req, res) {
+  console.log("came in");
+  
   try {
     const id = req.params.id;
     const updated = await Users.findByIdAndUpdate(
       id,
-      { isEnabled: false },
+      { status: false },
       {
         new: true,
         runValidators: true,
@@ -300,3 +303,13 @@ export async function loadhome(req, res) {
     res.status(400).json({ error: "from serverside error" });
   }
 }
+
+// export  async function AdminProfile  (req, res) {
+//   try {
+//     const admin = await Users.findById(req.adminId).select("-password");
+//     if (!admin) return res.status(404).json({ message: "Admin not found" });
+//     res.json(admin);
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };

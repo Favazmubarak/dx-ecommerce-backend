@@ -108,6 +108,24 @@ function logout(req, res) {
   });
 }
 
+//////////////////////////// category by id //////////////////
+async function getCategoriesProducts(req,res) {
+  
+  try {
+    const catid = req.params.id
+    const products  = await Products.find({category_id:catid})
+    if (products.length <= 0) {
+      console.log(products);
+      return res.status(404).json({ message: 'No products found for this category' });
+      
+    }
+    res.status(200).json(products)
+} catch (error) {
+      res.status(500).json({ error: 'server errror' });
+}
+}
+
+
 export {
   registerfn,
   loginfn,
@@ -115,4 +133,5 @@ export {
   getproducts,
   getproductsbyid,
   logout,
+  getCategoriesProducts
 };
