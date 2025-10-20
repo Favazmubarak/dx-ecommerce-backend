@@ -55,6 +55,11 @@ async function loginfn(req, res) {
     }
     req.session.userId = check._id;
     req.session.role = check.role;
+    req.session.name = check.username;
+    req.session.email = check.email;
+    console.log(check);
+    
+
     console.log(req.session);
 
     return res.status(200).json({
@@ -115,7 +120,7 @@ async function getCategoriesProducts(req,res) {
     const catid = req.params.id
     const products  = await Products.find({category_id:catid})
     if (products.length <= 0) {
-      console.log(products);
+      // console.log(products);
       return res.status(404).json({ message: 'No products found for this category' });
       
     }
@@ -123,6 +128,20 @@ async function getCategoriesProducts(req,res) {
 } catch (error) {
       res.status(500).json({ error: 'server errror' });
 }
+}
+
+ async function isLogined(req,res) {
+  // console.log("req came in");
+  
+     if (req.session.userId && req.session.role === "User") {
+      
+    res.json({logined:true, name:req.session.name , email:req.session.email , status:req.session.status })
+  }
+  else{
+
+    res.json({logined:false})
+  }
+ 
 }
 
 
@@ -133,5 +152,6 @@ export {
   getproducts,
   getproductsbyid,
   logout,
-  getCategoriesProducts
+  getCategoriesProducts,
+  isLogined
 };

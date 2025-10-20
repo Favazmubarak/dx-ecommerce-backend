@@ -6,7 +6,7 @@ export async function addcart(req, res) {
   try {
     const { product_id, quantity } = req.body;
     const qty = Number(quantity);
-    console.log(req.session.userId);
+    console.log(product_id ,quantity );
 
     const userId = req.session.userId;
     console.log(userId);
@@ -176,6 +176,8 @@ export async function postOrders(req, res) {
     }
 
     const cart = await Cart.find({ user_id }).populate("product_id");
+    console.log(cart);
+    
 
     if (!cart || cart.length === 0) {
       return res.status(400).json({ error: "Cart is empty" });
@@ -184,7 +186,7 @@ export async function postOrders(req, res) {
     let orderitems = [];
     let total_price = 0;
     cart.forEach((item) => {
-
+      
       const product_id = item.product_id._id;
       const item_total = quantity * price;
       orderitems.push({ product_id, quantity, price, item_total });
