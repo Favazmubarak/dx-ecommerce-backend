@@ -41,10 +41,10 @@ async function registerfn(req, res) {
 async function loginfn(req, res) {
   try {
     const { email, password } = req.body;
-    const check = await Users.findOne({ email: email });
-
+    const check = await Users.findOne({ email: email ,status:true });
+///////checking active or not
     if (!check) {
-      return res.status(400).json({ error: "User not Found" });
+      return res.status(400).json({ error: "User not Found " });
     }
     const matched = await bcrypt.compare(password, check.password);
     if (!matched) {
